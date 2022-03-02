@@ -356,6 +356,7 @@
 - #### Object Destructuring
 - #### Array destructuring
 - #### Temporal Dead Zone
+- #### Function Chaining
 
 Ref: [Javascript Interview Questions](https://www.interviewbit.com/javascript-interview-questions/)
 
