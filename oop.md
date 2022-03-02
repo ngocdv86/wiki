@@ -5,8 +5,14 @@
   <h1 align="center">Object oriented program</h1>
 </div>
 
+## Design Patterns
+
+[22 Design Patterns](https://refactoring.guru/design-patterns/catalog)
+
 ## Interface vs Abstract class
+
     _todo_
+
 ## 4 Tính chất của OOP
 
 - ### Tính đóng gói (Encapsulation)
@@ -39,7 +45,7 @@
   }
 
   [new Dog(), new Cat()].forEach((e) => {
-    e.speck();
+    e.speak();
   });
   // 'Gau Gau' 'Meo Meo'
   ```
