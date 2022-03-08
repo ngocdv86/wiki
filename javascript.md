@@ -478,5 +478,6 @@ Ref: [Javascript Interview Questions](https://www.interviewbit.com/javascript-in
     private getHello(); // [x] Wrong
   }
   ```
+- The 'abstract' modifier can only be used in TypeScript files
 
 <p align="right">(<a href="#top">Back to top</a>)</p>
