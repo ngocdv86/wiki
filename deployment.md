@@ -52,6 +52,8 @@
   kubectl describe pod pod_name
   ```
 
+All commands above run with `default` namespace, if we want to run with other namespace, add parameter `-n namepace_name`
+
 ## Services
 
 - Load Balancer Services
@@ -145,6 +147,8 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
 
 - Install some plugin
 
+  - [Git plugin](https://plugins.jenkins.io/git)
+  - [Credentials Plugin](https://plugins.jenkins.io/credentials)
   - [GitLab](https://plugins.jenkins.io/gitlab-plugin)
   - [Gitlab API](https://plugins.jenkins.io/gitlab-api)
   - [GitLab Authentication](https://plugins.jenkins.io/gitlab-oauth)
@@ -153,9 +157,13 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
 
   Manage Jenkins → Manage credentials → global (maybe) → Add Credentials
 
+  - Username: username of Gitlab
+  - Password: password of Gitlab
+
   <div align="center">
     <img src="images/jenkins/gitlab-credential.png" alt="Logo" width="950" height="451">
   </div>
+  <br />
 
 - Create new Item
 
@@ -166,18 +174,19 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
     <div align="center">
       <img src="images/jenkins/generate-secret-key.png" alt="Logo" width="611" height="230">
     </div>
+    <br />
 
     - → Pipeline script in SCM (_Definition_) → Git (_SCM_) → Enter HTTPS Gitlab Url, Pick credential
 
     <div align="center">
       <img src="images/jenkins/jenkins-connect-gitlab.png" alt="Logo" width="588" height="376">
     </div>
+    <br />
 
 - Config Webhooks Gitlab
   <div align="center">
     <img src="images/jenkins/gitlab-webhooks.png" alt="Logo" width="630" height="266">
   </div>
-
   Save & Test Push event
 
 ## 3. Use Kubernetes Pods As Jenkins Agents.
@@ -189,6 +198,7 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
   <div align="center">
     <img src="images/jenkins/k8s-agent.png" alt="Logo" width="944" height="463">
   </div>
+  <br />
 
   - Get Kubernetes URL
     ```sh
@@ -217,7 +227,21 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
       kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:default
       ```
 
+## Pipeline
+- Check environment
+  ```sh
+  sh 'printenv'
+  ```
+- Build project is parameterized
+  <div align="center">
+    <img src="images/jenkins/parameter.png" alt="Logo" width="600" height="300">
+  </div>
+  <br />
+## Some notes
+
 # Ref
 
 - [Kubernetes Tutorial for Beginners](https://www.youtube.com/watch?v=X48VuDVv0do)
+- [Complete Jenkins Pipeline Tutorial](https://www.youtube.com/watch?v=7KCS70sCoK0)
+
     <p align="right">(<a href="#top">Back to top</a>)</p>
