@@ -11,7 +11,7 @@
 
 - Get
   ```sh
-  kubectl get node|deployment|pods|services|ingress|replicaset
+  kubectl get node|namespace|deployment|pods|services|ingress|replicaset
   ```
 - Create deployment
   ```sh
@@ -33,7 +33,7 @@
   ```sh
   kubectl delete pod pod_name
   ```
-  - K8s sẽ tự động start lại pod mới để đảm bảo số pod bằng với thông số replica của deplo10.128.233.2yment
+  - K8s sẽ tự động start lại pod mới để đảm bảo số pod bằng với thông số replica của deployment
   - Muốn xóa hoàn toàn pod thì phải xóa deployment
 - Delete service
   ```sh
@@ -54,27 +54,32 @@
 
 ## Services
 
-- Load Balancer Service
+- Load Balancer Services
     <div align="center">
       <img src="images/k8s/load-balancer-service.png" alt="Logo" width="800" height="320">
 
       Connect: 10.128.233.2:3200
+
     </div>
 
-- NodePort Service
+- NodePort Services
     <div align="center">
       <img src="images/k8s/node-port-service.png" alt="Logo" width="800" height="350">
 
       Connect: 192.90.1.2:30008
+
     </div>
+
+- ClusterIP Services
+- Headless Services
 
 ## Volumes
 
-Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phảu cùng 1 node. `accessModes: ReadWriteMany` thì cho phép nhiều node.
+Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng 1 node. `accessModes: ReadWriteMany` thì cho phép nhiều node.
 
 # Helm
 
-## Common
+## Common command
 
 - Check template
 
@@ -206,8 +211,13 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phảu cùng
     kubectl create rolebinding jenkins-admin-binding --clusterrole=admin --serviceaccount=jenkins:jenkins --namespace=jenkins
     ```
 
-  - Troubleshooting - 403 cluster
-    ```sh
-    kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:default
-    ```
-  <p align="right">(<a href="#top">Back to top</a>)</p>
+  - Troubleshooting
+    - 403 cluster
+      ```sh
+      kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:default
+      ```
+
+# Ref
+
+- [Kubernetes Tutorial for Beginners](https://www.youtube.com/watch?v=X48VuDVv0do)
+    <p align="right">(<a href="#top">Back to top</a>)</p>
