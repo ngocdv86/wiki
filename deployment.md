@@ -228,20 +228,82 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
       ```
 
 ## Pipeline
-- Check environment
+
+- Run one when start Project
   ```sh
-  sh 'printenv'
+  helm install nestjs-core ./k8s/helm/chart --values ./k8s/helm/chart/values.yaml
   ```
-- Build project is parameterized
-  <div align="center">
-    <img src="images/jenkins/parameter.png" alt="Logo" width="600" height="300">
-  </div>
-  <br />
-## Some notes
+- Jenkins File
+
+  ```groovy
+  def dockerImage = 'ngocdv86/nestjs-core'
+  def deploymentName = 'nestjs-core'
+
+  podTemplate(
+    containers: [
+      containerTemplate(name: 'helm', alwaysPullImage: true, image: 'lachlanevenson/k8s-helm:v3.7.2', command: 'cat', ttyEnabled: true),
+      containerTemplate(name: 'docker', alwaysPullImage: true, image: 'docker:20.10.8', command: 'cat', ttyEnabled: true, privileged: true),
+    ],
+    volumes: [
+      hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+    ],
+  ) {
+    node(POD_LABEL) {
+
+      def branchName = env.gitlabTargetBranch ? env.gitlabTargetBranch : params.Source_Code_Branch
+
+      stage('checkout') {
+        myRepo = checkout scm
+        sh 'git branch -r'
+        sh "git checkout ${branchName}"
+      }
+
+      def lastCommit = env.gitlabAfter ? env.gitlabAfter : sh(script: "git log --format='%H' -n 1", returnStdout: true)
+      def dockerImageTag = "${branchName}-${env.BUILD_NUMBER}-${lastCommit}"
+
+      stage('build') {
+        container('docker') {
+          sh "docker build -t ${dockerImage}:${dockerImageTag} -f Dockerfile . "
+          sh "docker image ls | grep ${dockerImage}"
+          withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
+            sh "docker push ${dockerImage}:${dockerImageTag}"
+          }
+          sh "docker image rm ${dockerImage}:${dockerImageTag}"
+        }
+      }
+
+      stage('deploy') {
+        container('helm') {
+          withCredentials([file(credentialsId: 'jenkins-file', variable: 'config')]) {
+            sh "export KUBECONFIG=\${config}"
+            sh "helm upgrade ${deploymentName}  ./k8s/helm/chart --values ./k8s/helm/chart/values.yaml --set image.tag=${dockerImageTag}"
+          }
+        }
+      }
+    }
+  }
+  ```
+- Some notes
+  - Check environment
+    ```sh
+    sh 'printenv'
+    ```
+  - Build project is parameterized
+    <div align="center">
+      <img src="images/jenkins/parameter.png" alt="Logo" width="600" height="300">
+    </div>
+    <br />
+  - Troubleshooting
+    - Error: UPGRADE FAILED: query: failed to query with labels: secrets is forbidden: User "system:serviceaccount:default:default" cannot list resource "secrets" in API group "" in the namespace "default"
+      ```sh
+      kubectl create clusterrolebinding default --clusterrole cluster-admin --serviceaccount=default:default
+      ```
 
 # Ref
 
 - [Kubernetes Tutorial for Beginners](https://www.youtube.com/watch?v=X48VuDVv0do)
 - [Complete Jenkins Pipeline Tutorial](https://www.youtube.com/watch?v=7KCS70sCoK0)
+- [Docker Build inside Jenkins Build Agent](https://github.com/jenkinsci/kubernetes-operator/issues/21)
 
     <p align="right">(<a href="#top">Back to top</a>)</p>
