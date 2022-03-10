@@ -7,143 +7,154 @@
 
 # Kubernetes
 
-## Common command
+## Main K8s Components
 
-- Get
+- ### Node & Pod
+- ### Service
+
+  - Load Balancer Services
+    <div align="center">
+      <img src="images/k8s/load-balancer-service.png" alt="Logo" width="800" height="320">
+
+    Connect: 10.128.233.2:3200
+
+    </div>
+
+  - NodePort Services
+      <div align="center">
+        <img src="images/k8s/node-port-service.png" alt="Logo" width="800" height="350">
+
+        Connect: 192.90.1.2:30008
+
+      </div>
+
+  - ClusterIP Services
+  - Headless Services
+
+- ### Ingress
+- ### ConfigMap & Secret
+- ### Volumes
+  - Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng 1 node. `accessModes: ReadWriteMany` thì cho phép nhiều node.
+- ### Deployment & StatefulSet
+
+## Main Kubectl Commands - K8s CLI
+
+- ### Get status of different components
   ```sh
   kubectl get node|namespace|deployment|pods|services|ingress|replicaset
   ```
-- Create deployment
+- ### Create pod/deployment
   ```sh
-  kubectl create deployment deployment_name --image=image_name --replicas=2 [options]
+  kubectl create deployment <deployment_name> --image=image_name --replicas=2 [options]
   ```
   or
   ```sh
-  kubectl apply -f file_name
+  kubectl apply -f <file_name>
   ```
-- Edit | Delele deployment
+- ### Edit | Delele pod/deployment
   ```sh
-  kubectl edit|delete deployment deployment_name
+  kubectl edit|delete deployment <deployment_name>
   ```
-- Edit | Delele deployment with file
+  or
   ```sh
-  kubectl edit|delete -f file_name
+  kubectl edit|delete -f <file_name>
   ```
-- Delete pod
-  ```sh
-  kubectl delete pod pod_name
-  ```
-  - K8s sẽ tự động start lại pod mới để đảm bảo số pod bằng với thông số replica của deployment
-  - Muốn xóa hoàn toàn pod thì phải xóa deployment
-- Delete service
-  ```sh
-  kubectl delete service service_name
-  ```
-- Log pod to console
+- ### Debugging pods
   ```sh
   kubectl logs pod_name
   ```
-- Get interactive terminal
+- ### Get interactive terminal
   ```sh
   kubectl exec -it pod_name -- bin/bash
   ```
-- Get information about pod
+- ### Get information about pod
+
   ```sh
   kubectl describe pod pod_name
   ```
 
-All commands above run with `default` namespace, if we want to run with other namespace, add parameter `-n namepace_name`
+  All commands above run with `default` namespace, if we want to run with other namespace, add parameter `-n namepace_name`
 
-## Services
-
-- Load Balancer Services
-    <div align="center">
-      <img src="images/k8s/load-balancer-service.png" alt="Logo" width="800" height="320">
-
-      Connect: 10.128.233.2:3200
-
-    </div>
-
-- NodePort Services
-    <div align="center">
-      <img src="images/k8s/node-port-service.png" alt="Logo" width="800" height="350">
-
-      Connect: 192.90.1.2:30008
-
-    </div>
-
-- ClusterIP Services
-- Headless Services
-
-## Volumes
-
-Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng 1 node. `accessModes: ReadWriteMany` thì cho phép nhiều node.
+  Cannot delete pods with `kubectl delete pod <pod_name>` command, K8S will auto create new pods to ensure `replica` number of deployment has no change. [Solve here!](#edit-delele-pod-deployment)
 
 # Helm
 
-## Common command
+## Main Helm Commands
 
 - Check template
 
   ```sh
+  helm template [NAME] [CHART] [flags]
+
   helm template . --values values.yaml --values values.testing.yaml
   ```
 
 - Install
+
   ```sh
+  helm install [NAME] [CHART] [flags]
+
   helm install nestjs-core . --values values.yaml --values values.testing.yaml
+  ```
+
+- Install
+
+  ```sh
+  helm upgrade [RELEASE] [CHART] [flags]
+
+  helm upgrade nestjs-core . --values values.yaml --set image.tag=123
   ```
 
 # Jenkins
 
-## 1. Set up jenkins in k8s cluster (_v1.21.9_)
+## Set up jenkins in k8s cluster (_v1.21.9_)
 
-- Make jenkins-deployment.yaml file.
-  ```yaml
-  apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: jenkins
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        app: jenkins
-    template:
-      metadata:
-        labels:
-          app: jenkins
-      spec:
-        containers:
-          - name: jenkins
-            image: jenkins/jenkins:2.60.3
-            ports:
-              - containerPort: 8080
-            volumeMounts:
-              - name: jenkins-home
-                mountPath: /var/jenkins_home
-        volumes:
-          - name: jenkins-home
-            emptyDir: {}
-  ---
-  apiVersion: v1
-  kind: Service
-  metadata:
-    name: jenkins
-  spec:
-    type: NodePort
-    ports:
-      - port: 8080
-        targetPort: 8080
-    selector:
+```yaml
+# jenkins-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
       app: jenkins
-  ```
-- Deploy Jenkins service
-  ```sh
-  kubectl apply -f jenkins-deployment.yaml
-  ```
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:2.60.3
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+      volumes:
+        - name: jenkins-home
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: jenkins
+```
 
-## 2. Connect with webhooks Gitlab
+```sh
+kubectl apply -f jenkins-deployment.yaml
+```
+
+## Connect with webhooks Gitlab
 
 - Install some plugin
 
@@ -157,13 +168,14 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
 
   Manage Jenkins → Manage credentials → global (maybe) → Add Credentials
 
-  - Username: username of Gitlab
-  - Password: password of Gitlab
-
   <div align="center">
     <img src="images/jenkins/gitlab-credential.png" alt="Logo" width="950" height="451">
   </div>
   <br />
+
+  _Username:_ `username` of Gitlab
+
+  _Password:_ `password` of Gitlab
 
 - Create new Item
 
@@ -176,7 +188,7 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
     </div>
     <br />
 
-    - → Pipeline script in SCM (_Definition_) → Git (_SCM_) → Enter HTTPS Gitlab Url, Pick credential
+    - → Pipeline script in SCM (_Definition_) → Git (_SCM_) → enter HTTPS Gitlab URL, pick credential
 
     <div align="center">
       <img src="images/jenkins/jenkins-connect-gitlab.png" alt="Logo" width="588" height="376">
@@ -200,11 +212,9 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
   </div>
   <br />
 
-  - Get Kubernetes URL
-    ```sh
-    kubectl cluster-info
-    ```
-  - Credentials is `config file` of K8s
+  _Get Kubernetes URL:_ `kubectl cluster-info`
+
+  _Credentials:_ `config file` of K8s
 
 - Solution 2:
 
@@ -284,6 +294,7 @@ Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng
     }
   }
   ```
+
 - Some notes
   - Check environment
     ```sh
