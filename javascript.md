@@ -448,14 +448,6 @@ Ref: [Javascript Interview Questions](https://www.interviewbit.com/javascript-in
   //Run independence.
   ```
 
-- `private` modifier cannot be used with `abstract` modifier in Abstract Class.
-
-  ```js
-  abstract class AbstractClass {
-    private abstract getHello(); // [x] Wrong
-  }
-  ```
-
 - Default modifier method in class JS is public
 
   ```js
@@ -469,15 +461,6 @@ Ref: [Javascript Interview Questions](https://www.interviewbit.com/javascript-in
   }
   ```
 
-- Interface method modifier
-
-  Since Interface is schema that anyone can use to access some class features, its fields can not be `private` or `protected`
-
-  ```js
-  interface Service {
-    private getHello(); // [x] Wrong
-  }
-  ```
-- The 'abstract' modifier can only be used in TypeScript files
+- The 'abstract', 'interface' modifier can only be used in TypeScript files
 
 <p align="right">(<a href="#top">Back to top</a>)</p>

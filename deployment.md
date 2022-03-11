@@ -21,12 +21,12 @@
     </div>
 
   - NodePort Services
-      <div align="center">
-        <img src="images/k8s/node-port-service.png" alt="Logo" width="800" height="350">
+    <div align="center">
+      <img src="images/k8s/node-port-service.png" alt="Logo" width="800" height="350">
 
-        Connect: 192.90.1.2:30008
+    Connect: 192.90.1.2:30008
 
-      </div>
+    </div>
 
   - ClusterIP Services
   - Headless Services
@@ -61,21 +61,23 @@
   ```
 - ### Debugging pods
   ```sh
-  kubectl logs pod_name
+  kubectl logs <pod_name>
   ```
 - ### Get interactive terminal
   ```sh
-  kubectl exec -it pod_name -- bin/bash
+  kubectl exec -it <pod_name> -- bin/bash
   ```
 - ### Get information about pod
 
   ```sh
-  kubectl describe pod pod_name
+  kubectl describe pod <pod_name>
   ```
 
   All commands above run with `default` namespace, if we want to run with other namespace, add parameter `-n namepace_name`
 
-  Cannot delete pods with `kubectl delete pod <pod_name>` command, K8S will auto create new pods to ensure `replica` number of deployment has no change. [Solve here!](#edit-delele-pod-deployment)
+  Cannot delete pods with `kubectl delete pod <pod_name>` command, K8S will auto create new pods to ensure `replica` number of deployment has no change. [Solve here!](#edit--delele-poddeployment)
+
+<p align="right">(<a href="#top">Back to top</a>)</p>
 
 # Helm
 
@@ -104,6 +106,8 @@
 
   helm upgrade nestjs-core . --values values.yaml --set image.tag=123
   ```
+
+  <p align="right">(<a href="#top">Back to top</a>)</p>
 
 # Jenkins
 
@@ -316,5 +320,5 @@ kubectl apply -f jenkins-deployment.yaml
 - [Kubernetes Tutorial for Beginners](https://www.youtube.com/watch?v=X48VuDVv0do)
 - [Complete Jenkins Pipeline Tutorial](https://www.youtube.com/watch?v=7KCS70sCoK0)
 - [Docker Build inside Jenkins Build Agent](https://github.com/jenkinsci/kubernetes-operator/issues/21)
-
-    <p align="right">(<a href="#top">Back to top</a>)</p>
+- [How To Integrate GitLab With Jenkins](https://www.youtube.com/watch?v=-O4tiLzYJMI)
+<p align="right">(<a href="#top">Back to top</a>)</p>
