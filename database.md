@@ -8,7 +8,16 @@
 ## Main concept.
 
 - ### ACID
-- ### CAP 
+
+  - #### What is Database Transaction?
+    <div align="center">
+      <img src="images/database/transaction.png" alt="Logo" width="5020" height="260">
+    </div>
+    <br />
+  - Atomicity
+  - Consistency
+
+- ### CAP
 - ### BASE
 
 ## Classification

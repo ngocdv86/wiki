@@ -351,12 +351,49 @@
 ## Advance concepts
 
 - #### Generator functions
-- #### WeakSet
-- #### WeakMap
+
+  ```js
+  function* generator(i) {
+    yield i;
+    yield i + 10;
+  }
+
+  const gen = generator(10);
+
+  console.log(gen.next().value);
+  // expected output: 10
+
+  console.log(gen.next().value);
+  // expected output: 20
+
+  console.log(gen.next().value);
+  // expected output: undefined
+  ```
+
+- #### Function Chaining
+
+  ```js
+  class Student{
+    private name;
+    private age;
+
+    setName(name){
+      this.name = name;
+      return this;
+    }
+
+    setAge(age){
+      this.age = age;
+      return this;
+    }
+  }
+
+  new Student().setName('Ngoc').setAge(22);
+  ```
+
 - #### Object Destructuring
 - #### Array destructuring
 - #### Temporal Dead Zone
-- #### Function Chaining
 
 Ref: [Javascript Interview Questions](https://www.interviewbit.com/javascript-interview-questions/)
 

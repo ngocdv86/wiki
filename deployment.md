@@ -24,7 +24,7 @@
     <div align="center">
       <img src="images/k8s/node-port-service.png" alt="Logo" width="800" height="350">
 
-    Connect: 192.90.1.2:30008
+    Connect: 172.90.1.2:30008
 
     </div>
 
