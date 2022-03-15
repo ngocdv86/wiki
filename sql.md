@@ -252,6 +252,7 @@ where (gv.MABM=bm.MABM and bm.MAKHOA='CNTT')
 select *
 from BOMON bm, GIAOVIEN gv
 where bm.TRUONGBM = gv.MAGV
+
 --Câu 6 Với mỗi giáo viên, hãy cho biết thông tin của bộ môn mà họđang làm việc.
 select *
 from GIAOVIEN gv,BOMON bm

@@ -11,7 +11,19 @@
 
 ## Interface vs Abstract class
 
-    _todo_
+- Interface
+
+  Như một bản vẽ, khi mà tất cả những class implement interface đều có những phương thức mà interface này đặt ra. Mục đích **`ràng buộc`** là chính.
+
+  Tất cả các hàm đều là hàm ảo (không có thân chương trình) và public.
+
+- Abstract Class
+
+  Khi có một nhóm các đối tượng có tính chất giống nhau, `Abstract class` đứng ra để xây dụng bộ khung (flow xử lí, hàm chung, hàm mặc định). Từ đó những class con có thể overide hoặc kế thừa lại những phương thức này. Mục đính **`reuse`** là chính.
+
+  Có ít nhất 1 hàm là hàm ảo.
+
+  Khi `Abstract class` có những hàm `public`, thì các hàm con cũng có, điều này cũng thể hiện **`tính ràng buộc`** của `Abstract class.`
 
 ## 4 Tính chất của OOP
 
@@ -56,8 +68,7 @@
   - Method Overriding (run time polymorphism)
 
 - ### Tính kế thừa (Inheritance)
+
   Là kỹ thuật cho phép kế thừa lại những tính năng mà một đối tượng khác đã có, giúp tránh việc code lặp dư thừa mà chỉ xử lý công việc tương tự.
 
-
---- 
-  a implement ?? interface 1 luc? abstraclass??
+  <p align="right">(<a href="#top">Back to top</a>)</p>

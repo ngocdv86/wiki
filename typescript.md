@@ -9,7 +9,14 @@
 
 ## Some notes
 
-- Interface & Abstract Class can only be used in TypeScript files
+- Generic type
+  ```ts
+  function getTuple<T>(a: T, b: T): [T, T] {
+    return [a, b];
+  }
+  ```
+  Typescript support generic type for class, function, interface.
+- Interface & Abstract Class just only be used in TypeScript files
 - Interface method modifier
 
   Since Interface is schema that anyone can use to access some class features, its fields can not be `private` or `protected`
