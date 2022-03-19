@@ -62,7 +62,23 @@
 
   Merge all commit after `commit_id` (not include `commit_id`) to new commit.
 
-_Ref:_
+- ### Add new remote git
+
+  ```sh
+  # Fetch all
+  git branch -r | grep -v '\->' | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" | while read remote; do git branch --track "${remote#origin/}" "$remote"; done
+
+  git fetch --all
+  git pull --all
+
+  # Push to new remote repository
+  git remote -v
+  git remote add new-origin https://gitlab.com/ngoc861999/socialift.git
+  git push -u new-origin --all
+  git push -u new-origin --tags
+  ```
+
+  _Ref:_
 
 - [What is the difference between GitHub Flow and GitLab Flow?](https://stackoverflow.com/questions/39917843/what-is-the-difference-between-github-flow-and-gitlab-flow)
 - [Development Approaches Git Flow and GitHub Flow](https://www.youtube.com/watch?v=w2r0oLFtXAw)
