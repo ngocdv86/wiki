@@ -63,9 +63,41 @@
   - Signature = `HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)`, nếu dùng thuật toán HMACSHA256. Vì vậy dù có đọc được thông tin payload cũng không để sửa thông tin, do không có `secret` để tạo `Signature` tương ứng.
   - Nên đặt secretKey đủ dài để hạn chế Bruteforcing.
 
+    _Please note the RFC7518 standard states that "A key of the same size as the hash output (for instance, 256 bits for "HS256") or larger MUST be used with this algorithm." Auth0 secret keys exceed this requirement making cracking via this or similar tools all but impossible_
+
+    [Xem thêm](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/#Brute-Forcing-a-HS256-JSON-Web-Token)
+
 - ### Encrypt Password
 - ### Refresh token
+
+  - A refresh token can help you balance security with usability. Since refresh tokens are typically longer-lived, you can use them to request new access tokens after the shorter-lived access tokens expire.
+  - We need to have a strategy in place that limits or curtails their usage if they ever get leaked or become compromised.
+
+    - Refresh Token Rotation:
+
+      🐱 Legitimate User uses 🔄 **Refresh Token** to get a **New refresh-access token**
+
+    - Refresh Token Automatic Reuse Detection:
+
+      🐱 Legitimate User uses 🔄 **Refresh Token 1** to get a **New refresh-access token** pair.
+
+      The 🚓 **Auth0 Authorization Server** returns 🔄 **Refresh Token 2** and 🔑 **Access Token 2** to 🐱 Legitimate User.
+
+      😈 Malicious User then attempts to use 🔄 **Refresh Token 1** to get a new access token. Pure evil!
+
+      The 🚓 **Auth0 Authorization Server** has been keeping track of all the refresh tokens descending from the original refresh token. That is, it has created a "token family".
+
+      The 🚓 **Auth0 Authorization Server** recognizes that someone is reusing 🔄 Refresh Token 1 and immediately invalidates the refresh token family, including 🔄 Refresh Token 2.
+
+      The 🚓 **Auth0 Authorization Server** returns an Access Denied response to 😈 Malicious User.
+
+      🔑 **Access Token 2** expires, and 🐱 Legitimate User attempts to use 🔄 **Refresh Token 2** to request a **New refresh-access token** pair.
+
+      The 🚓 **Auth0 Authorization Server** returns an Access Denied response to 🐱 Legitimate User.
+
 - ### Các loại token
 - ### REF
   [Single Sign-On (SSO) là gì, hoạt động ra sao?](https://viblo.asia/p/single-sign-on-sso-la-gi-hoat-dong-ra-sao-bWrZn4oQ5xw)
+  [What Are Refresh Tokens and How to Use Them Securely](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/#Keeping-Refresh-Tokens-Secure)
+  [vladwulf/nestjs-jwts](https://github.com/vladwulf/nestjs-jwts/blob/main/src/auth/auth.service.ts)
   <p align="right">(<a href="#top">Back to top</a>)</p>
