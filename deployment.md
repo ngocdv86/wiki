@@ -5,6 +5,172 @@
   <h1 align="center">Deployment</h1>
 </div>
 
+# Docker
+
+### Container
+
+- A way to package application with all the nesscessary dependencies and configuration.
+
+- Portable artifact, easily shared and moved around.
+
+  |           Docker image            |                  Docker container                   |
+  | :-------------------------------: | :-------------------------------------------------: |
+  | The actual package of application | When pull that image on my local machine and run it |
+  |            Not running            |                       Running                       |
+
+### Image Layer
+
+  <div align="center">
+    <img src="images/k8s/image-layer.png" alt="Logo" width="425" height="255">
+  </div>
+
+Các layer có thể share giữa các image. Vì vậy khi pull app:2.0, nếu vẫn sử dụng các layer `node:13-alpine` thì image `node:13-alpine` không cần pull lại.
+
+### Container Port
+
+- 1 application có thể expose ra nhiều port:
+
+  Ví dụ:
+
+  - http: 8080
+  - grpc: 8081
+
+- → 1 image khi build có thể config nhiều port (config `expose` trong dockerFile)
+- → 1 container khi run có thể expose nhiều port
+- → 1 container cần map nhiều port ra host (machine)
+
+  Ví dụ:
+
+  - -p 3000:8080 -p 3001:8081
+
+- Các container có thể expose trùng port nhau, vì chúng độc lập với nhau.
+
+### Docker Network
+
+- _Docker network sẽ đảm nhiệm nhiệm vụ kết nối mạng giữa các container với nhau, kết nối giữa container với bên ngoài, cũng như kết nối giữa các cụm (swarm) docker containers._
+
+  ```sh
+  docker network create <network_name>
+  docker run --network <network_name> <image>
+
+  docker network inspect <network_name>
+  ```
+
+  ```sh
+  # create network
+  docker network create mongodb-network
+
+  # start mongodb
+  # If want to expose port ->  host: -p 27017:27017
+  docker run --rm -d --network mongodb-network --name mongodb mongo
+
+  #start mongo-express
+  docker run --rm -d \
+  --network mongodb-network \
+  --name mongo-express \
+  -e ME_CONFIG_MONGODB_SERVER=mongodb \
+  -e ME_CONFIG_MONGODB_PORT=27017 \
+  -p 8081:8081 mongo-express
+  ```
+
+### Docker compose
+
+```yaml
+version: '3'
+services:
+   mongodb:
+    image: mongo
+    networks:
+    - mongodb-network
+    volumes:
+    - mongo_data1:/data/db
+  mongo-express:
+    image: mongo-express
+    depends_on:
+    - mongodb
+    ports:
+    - 8080:8081
+    environment:
+    - ME_CONFIG_MONGODB_SERVER=mongodb
+    - ME_CONFIG_MONGODB_PORT=27017
+    networks:
+    - mongodb-network
+networks:
+  mongodb-network:
+    driver: bridge
+volumes:
+  mongo_data1:
+    driver: local
+```
+
+```sh
+docker-compose -f <file.yaml> up -d
+docker-compose -f <file.yaml> down
+```
+
+### Docker File
+
+- Các step chạy trong docker file chạy tuần tự từ trên xuống, và các step sẽ được cache lại. Do đó, khi build lại image, docker chỉ build lại những step có sự thay đổi.
+- Từ lí do trên, ta nên tách làm 2 step khi build ứng dụng nodejs
+  - Copy package.json file + install
+  - Copy code + build
+
+### Docker volume
+
+- Persistence data from `Virtual File System`(container) -> `Host File System`(Physical)
+
+- Có 3 kiểu:
+  - Host Volumes
+  - Anonymous Volumes
+  - Named Volumes: reference the volume by name, shold use in production 🌟.
+
+### Some Commands
+
+- Get all container (running & not running)
+  ```sh
+  docker ps -a
+  ```
+- `docker run` = `docker pull` + `docker start`
+  - `docker run` is to create a new container
+  - `docker start` is to restart a stopped container, will retain all the attributes when we create.
+- Run in background
+  ```sh
+  docker run -d <image_name>
+  ```
+- Restart container
+
+  ```sh
+  docker stop <container_ID>
+
+  # docker ps -a
+  # if you forgot <container_ID>
+
+  docker start <container_ID>
+  ```
+
+- Binding port application to hosts machine
+
+  ```sh
+  # $ docker stop <container_ID>
+  # stop if container is running
+
+  docker run -p6000:6379 <image_name>
+  # 0.0.0.0:6000 -> 6379/tcp
+  ```
+
+- Logs
+
+  ```sh
+  # $ docker run -d <image_name>
+
+  docker logs <container_ID>
+  ```
+
+- Inside the container
+  ```sh
+  docker exec -it <container_ID> /bin/bash
+  ```
+
 # Kubernetes
 
 ## Main K8s Components

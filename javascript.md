@@ -499,5 +499,10 @@ Ref: [Javascript Interview Questions](https://www.interviewbit.com/javascript-in
   ```
 
 - The 'abstract', 'interface' modifier can only be used in TypeScript files
+- [forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#description):
+
+  There is no way to stop or break a `forEach` loop other than by throwing an exception.
+
+  `forEach` expects a synchronous function. `forEach` does not wait for promises.
 
 <p align="right">(<a href="#top">Back to top</a>)</p>

@@ -97,7 +97,7 @@
 
 - ### Các loại token
 - ### REF
-  [Single Sign-On (SSO) là gì, hoạt động ra sao?](https://viblo.asia/p/single-sign-on-sso-la-gi-hoat-dong-ra-sao-bWrZn4oQ5xw)
-  [What Are Refresh Tokens and How to Use Them Securely](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/#Keeping-Refresh-Tokens-Secure)
-  [vladwulf/nestjs-jwts](https://github.com/vladwulf/nestjs-jwts/blob/main/src/auth/auth.service.ts)
+  - [Single Sign-On (SSO) là gì, hoạt động ra sao?](https://viblo.asia/p/single-sign-on-sso-la-gi-hoat-dong-ra-sao-bWrZn4oQ5xw)
+  - [What Are Refresh Tokens and How to Use Them Securely](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/#Keeping-Refresh-Tokens-Secure)
+  - [vladwulf/nestjs-jwts](https://github.com/vladwulf/nestjs-jwts/blob/main/src/auth/auth.service.ts)
   <p align="right">(<a href="#top">Back to top</a>)</p>
