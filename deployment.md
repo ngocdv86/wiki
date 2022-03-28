@@ -176,6 +176,10 @@ docker-compose -f <file.yaml> down
 ## Main K8s Components
 
 - ### Node & Pod
+  #### Node
+  #### Pod
+  - Pod always restart when application `crash` or `end` (process done and exit).
+  - Cannot delete pods with `kubectl delete pod <pod_name>` command, K8S will auto create new pods to ensure `replicas` number of deployment has no change. [Solve here!](#edit--delele-poddeployment)
 - ### Service
 
   - Load Balancer Services
@@ -193,6 +197,7 @@ docker-compose -f <file.yaml> down
     Connect: 172.90.1.2:30008
 
     </div>
+    Nếu cluster có nhiều node, có thể truy cập bằng IP của node bất kì.
 
   - ClusterIP Services
   - Headless Services
@@ -201,7 +206,45 @@ docker-compose -f <file.yaml> down
 - ### ConfigMap & Secret
 - ### Volumes
   - Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng 1 node. `accessModes: ReadWriteMany` thì cho phép nhiều node.
-- ### Deployment & StatefulSet
+- ### Deployment & StatefulSet & DaemonSet
+
+  #### Deployment
+
+  ```yaml
+  #deployment.yaml
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: hello
+  spec:
+    replicas: 2
+  ```
+
+  A Deployment provides declarative updates for Pods and ReplicaSets.
+
+  Sử dụng Deployment thường được sử dụng cho các ứng dụng stateless, bạn cũng có thể lưu trạng thái triển khai bằng cách gắn cho nó một Persistent Volume và làm cho nó trở thành stateful. Nhưng lưu ý là ở đây tất cả các Pod của bạn sẽ cùng chia sẻ một Volume và dữ liệu của chúng cũng sẽ tương tự nhau.
+
+  1 deployment scale 50 relicas thì chạy oke, vì nó scale từ từ 1 -> 2 -> 3... Chạy 50 cái deployment đồng thời thì server chết, vì được start đồng thời.
+
+  #### StatefulSet
+
+  ```yaml
+  #deamonset.yaml
+  apiVersion: apps/v1
+  kind: DaemonSet
+  ```
+
+  #### DeamonSets
+
+  ```yaml
+  #deamonset.yaml
+  apiVersion: apps/v1
+  kind: DaemonSet
+  ```
+
+  A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected.
+
+  Tương tự như một Deployment, tức là tất cả các Pod cũng sẽ cùng chia sẻ một Persistent Volume.
 
 ## Main Kubectl Commands - K8s CLI
 
@@ -240,8 +283,6 @@ docker-compose -f <file.yaml> down
   ```
 
   All commands above run with `default` namespace, if we want to run with other namespace, add parameter `-n namepace_name`
-
-  Cannot delete pods with `kubectl delete pod <pod_name>` command, K8S will auto create new pods to ensure `replica` number of deployment has no change. [Solve here!](#edit--delele-poddeployment)
 
 <p align="right">(<a href="#top">Back to top</a>)</p>
 
@@ -487,4 +528,5 @@ kubectl apply -f jenkins-deployment.yaml
 - [Complete Jenkins Pipeline Tutorial](https://www.youtube.com/watch?v=7KCS70sCoK0)
 - [Docker Build inside Jenkins Build Agent](https://github.com/jenkinsci/kubernetes-operator/issues/21)
 - [How To Integrate GitLab With Jenkins](https://www.youtube.com/watch?v=-O4tiLzYJMI)
+- [[Kubernetes] So sánh giữa Deployments, StatefulSets và DaemonSets. Khi nào nên sử dụng chúng?](https://viblo.asia/p/kubernetes-so-sanh-giua-deployments-statefulsets-va-daemonsets-khi-nao-nen-su-dung-chung-ORNZqXd3K0n)
 <p align="right">(<a href="#top">Back to top</a>)</p>
