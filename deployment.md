@@ -35,9 +35,9 @@ Các layer có thể share giữa các image. Vì vậy khi pull app:2.0, nếu 
   - http: 8080
   - grpc: 8081
 
-- → 1 image khi build có thể config nhiều port (config `expose` trong dockerFile)
-- → 1 container khi run có thể expose nhiều port
-- → 1 container cần map nhiều port ra host (machine)
+- → 1 image config nhiều port (config `expose` trong dockerFile) để build.
+- → 1 container khi run expose nhiều port.
+- → 1 container cần map nhiều port ra host (machine).
 
   Ví dụ:
 
@@ -178,6 +178,8 @@ docker-compose -f <file.yaml> down
 - ### Node & Pod
 - ### Service
 
+  An abstract way to expose an application running on a set of Pods as a network service.
+
   - Load Balancer Services
     <div align="center">
       <img src="images/k8s/load-balancer-service.png" alt="Logo" width="800" height="320">
@@ -198,6 +200,35 @@ docker-compose -f <file.yaml> down
   - Headless Services
 
 - ### Ingress
+  - Ingress may provide load balancing, SSL termination and name-based virtual hosting, combine services.
+    - Combine services.
+      ```yaml
+      # .spec.rules
+      - http:
+          paths:
+            - path: /a
+              pathType: Prefix
+              backend:
+                service:
+                  name: testA
+                  port:
+                    number: 80
+            - path: /b
+              pathType: Prefix
+              backend:
+                service:
+                  name: testB
+                  port:
+                    number: 80
+      ```
+      - Name-based virtual hosting
+      ```yaml
+      # .spec.rules
+      - host: "foo.bar.com"
+        http:
+          paths:
+          ...
+      ```
 - ### ConfigMap & Secret
 - ### Volumes
   - Khi `accessModes: ReadWriteOne` thì pods muốn truy cập PV này phải cùng 1 node. `accessModes: ReadWriteMany` thì cho phép nhiều node.
@@ -487,4 +518,7 @@ kubectl apply -f jenkins-deployment.yaml
 - [Complete Jenkins Pipeline Tutorial](https://www.youtube.com/watch?v=7KCS70sCoK0)
 - [Docker Build inside Jenkins Build Agent](https://github.com/jenkinsci/kubernetes-operator/issues/21)
 - [How To Integrate GitLab With Jenkins](https://www.youtube.com/watch?v=-O4tiLzYJMI)
+
+- 1 deployment scale 50 relicas thì chạy oke, vì nó scale từ từ 1 -> 2 -> 3 ...
+- chạy 50 cái deployment đồng thời thì server chết, vì được start đồng thời.
 <p align="right">(<a href="#top">Back to top</a>)</p>
