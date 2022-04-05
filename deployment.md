@@ -35,13 +35,15 @@ Các layer có thể share giữa các image. Vì vậy khi pull app:2.0, nếu 
   - http: 8080
   - grpc: 8081
 
-- → 1 image config nhiều port (config `expose` trong dockerFile) để build.
-- → 1 container khi run expose nhiều port.
-- → 1 container cần map nhiều port ra host (machine).
+  → 1 image config nhiều port (config `expose` trong dockerFile) để build.
 
-  Ví dụ:
+  → 1 container khi run expose nhiều port.
 
-  - -p 3000:8080 -p 3001:8081
+  → 1 container cần map nhiều port ra host (machine).
+
+  ```sh
+  -p 3000:8080 -p 3001:8081
+  ```
 
 - Các container có thể expose trùng port nhau, vì chúng độc lập với nhau.
 
@@ -57,12 +59,15 @@ Các layer có thể share giữa các image. Vì vậy khi pull app:2.0, nếu 
   ```
 
   ```sh
+  # Terminal
   # create network
   docker network create mongodb-network
 
   # start mongodb
   # If want to expose port ->  host: -p 27017:27017
-  docker run --rm -d --network mongodb-network --name mongodb mongo
+  docker run --rm -d \
+  --network mongodb-network \
+  --name mongodb mongo
 
   #start mongo-express
   docker run --rm -d \
@@ -72,6 +77,52 @@ Các layer có thể share giữa các image. Vì vậy khi pull app:2.0, nếu 
   -e ME_CONFIG_MONGODB_PORT=27017 \
   -p 8081:8081 mongo-express
   ```
+
+  ```yaml
+  # Docker compose
+  version: "3"
+  services:
+    mongodb:
+      image: mongo
+      networks:
+        - mongodb-network
+    mongo-express:
+      image: mongo-express
+      depends_on:
+        - mongodb
+      ports:
+        - 8080:8081
+      environment:
+        - ME_CONFIG_MONGODB_SERVER=mongodb
+        - ME_CONFIG_MONGODB_PORT=27017
+      networks:
+        - mongodb-network
+  networks:
+    mongodb-network:
+      driver: bridge
+  ```
+
+### Docker volume
+
+- Persistence data from `Virtual File System` (container) -> `Host File System` (Physical)
+
+- Có 3 kiểu:
+  - Host Volumes
+  - Anonymous Volumes
+  - Named Volumes: reference the volume by name, shold use in production 🌟.
+
+```yaml
+#Docker compose
+version: "3"
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - mongo_data1:/data/db
+volumes:
+  mongo_data1:
+    driver: local
+```
 
 ### Docker compose
 
@@ -114,15 +165,6 @@ docker-compose -f <file.yaml> down
 - Từ lí do trên, ta nên tách làm 2 step khi build ứng dụng nodejs
   - Copy package.json file + install
   - Copy code + build
-
-### Docker volume
-
-- Persistence data from `Virtual File System`(container) -> `Host File System`(Physical)
-
-- Có 3 kiểu:
-  - Host Volumes
-  - Anonymous Volumes
-  - Named Volumes: reference the volume by name, shold use in production 🌟.
 
 ### Some Commands
 
@@ -559,11 +601,5 @@ kubectl apply -f jenkins-deployment.yaml
 - [Complete Jenkins Pipeline Tutorial](https://www.youtube.com/watch?v=7KCS70sCoK0)
 - [Docker Build inside Jenkins Build Agent](https://github.com/jenkinsci/kubernetes-operator/issues/21)
 - [How To Integrate GitLab With Jenkins](https://www.youtube.com/watch?v=-O4tiLzYJMI)
-<<<<<<< HEAD
-
-- 1 deployment scale 50 relicas thì chạy oke, vì nó scale từ từ 1 -> 2 -> 3 ...
-- chạy 50 cái deployment đồng thời thì server chết, vì được start đồng thời.
-=======
 - [[Kubernetes] So sánh giữa Deployments, StatefulSets và DaemonSets. Khi nào nên sử dụng chúng?](https://viblo.asia/p/kubernetes-so-sanh-giua-deployments-statefulsets-va-daemonsets-khi-nao-nen-su-dung-chung-ORNZqXd3K0n)
->>>>>>> e6a413c33587d9af67e1c05988c4a41942c2194e
 <p align="right">(<a href="#top">Back to top</a>)</p>
