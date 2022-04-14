@@ -301,12 +301,6 @@ docker-compose -f <file.yaml> down
 
   #### StatefulSet
 
-  ```yaml
-  #deamonset.yaml
-  apiVersion: apps/v1
-  kind: DaemonSet
-  ```
-
   #### DeamonSets
 
   ```yaml
