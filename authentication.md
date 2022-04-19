@@ -67,7 +67,6 @@
 
     [Xem thêm](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/#Brute-Forcing-a-HS256-JSON-Web-Token)
 
-- ### Encrypt Password
 - ### Refresh token
 
   - A refresh token can help you balance security with usability. Since refresh tokens are typically longer-lived, you can use them to request new access tokens after the shorter-lived access tokens expire.
@@ -94,6 +93,27 @@
       🔑 **Access Token 2** expires, and 🐱 Legitimate User attempts to use 🔄 **Refresh Token 2** to request a **New refresh-access token** pair.
 
       The 🚓 **Auth0 Authorization Server** returns an Access Denied response to 🐱 Legitimate User.
+
+- ### Encrypt Password - `bcryptjs`
+
+  ```js
+  const bcrypt = require("bcryptjs");
+  const salt = bcrypt.genSaltSync(12); // number of rounds is 12
+
+  // $2a$12$kzAmQ9oO5Qiy0yXZ.yZtQ.
+
+  // First Part $2b$ identifies the bcrypt algorithm version used.
+  // Second Part $12$ 12 is the cost factor.
+  // Third Part is first 22 characters is salt.
+
+  const hash = bcrypt.hashSync("ngocdv", salt);
+
+  // $2a$12$kzAmQ9oO5Qiy0yXZ.yZtQ.62sLEde1vt/k19e7/lsObHEr6a19fou
+
+  // 62sLEde1vt/k19e7/lsObHEr6a19fou is a result of 2^12 time hash.
+  ```
+
+  - Với sự phát triển của công nghệ, tương lai chỉ cần tăng rounds lên để tránh brute force.
 
 - ### Các loại token
 - ### REF
