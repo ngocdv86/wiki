@@ -57,6 +57,7 @@
   | Supports both Master-Slave Replication and Master-Master Replication. | Supports only Master-Slave Replication. |
   |               Redis does not support Map Reduce method                |   MongoDB supports Map Reduce method.   |
 
+
 - ### ACID
 
   - #### What is Database Transaction?
