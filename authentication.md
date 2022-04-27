@@ -15,9 +15,9 @@
 
   Mỗi giao thức single sign-on sẽ có cơ chế chia sẻ khác nhau, nhưng điểm chung đều là tạo ra một domain trung tâm (central domain). Qua domain này, thông tin về cookie sẽ được chia sẻ đến các domain con.
   <div align="center">
-      <img src="images/auth/sso.png" alt="Logo" width="860" height="600">
-    </div>
-    <br />
+    <img src="images/auth/sso.png" alt="Logo" width="860" height="600">
+  </div>
+  <br />
 
 - ### JWT
 
