@@ -61,11 +61,11 @@ _a. Direct Exchange_
   `pdf_log_queue1` queues
 - Every queue is automatically bound to the `default` exchange with a routing key which
   is the same as the queue name.
-    <div align="left">
+    <div align="center">
       <img src="images/queue/direct-exchange-rabbitmq-1.png" alt="Logo" width="398" height="21">
     </div>
 
-  A message `{ routingKey: ‘pdf_log_queue’ }` → `default` exchange → `pdf_log_queue`
+  A message `{ routingKey: pdf_log_queue }` → `default` exchange → `pdf_log_queue`
   queue
 
 _a. Topic Exchange_
@@ -85,7 +85,7 @@ _a. Topic Exchange_
 _c. Fanout Exchange_
 
 - A fanout exchange copies and routes a received message to all queues that are
-  bound to it. The routing keys provided will simply be `ignored`.
+  bound to it. The routing keys provided will simply be **ignored**.
 
 _d. Headers Exchange_
 
