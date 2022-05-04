@@ -15,15 +15,16 @@
       <img src="images/git/git-flow.png" alt="Logo" width="500" height="610">
     </div>
 
-    If your team is doing continuous delivery of software, not rolled back (Web apps), I would suggest to adopt a much simpler workflow (like `GitHub flow`) instead of trying to shoehorn git-flow into your team.
-
   - [Github flow](https://docs.github.com/en/get-started/quickstart/github-flow)
+
+  If your team is doing continuous delivery of software, not rolled back (Web apps), I would suggest to adopt a much simpler workflow (like `GitHub flow`) instead of trying to shoehorn git-flow into your team.
     <div align="center">
       <img src="images/git/github-flow.png" alt="Logo" width="313" height="229">
     </div>
+    
   - Gitlab flow
 
-    GitHub flow does assume you are able to deploy to production every time you merge a feature branch, but there are many cases where this is not possible.
+  GitHub flow does assume you are able to deploy to production every time you merge a feature branch, but there are many cases where this is not possible.
 
     <div align="center">
       <img src="images/git/gitlab-flow.png" alt="Logo" width="169" height="274">
